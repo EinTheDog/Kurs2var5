@@ -41,7 +41,7 @@ public class RecoderLauncher {
             int result = recoder.recode(inputFileName, outputFileName);
             String myResult = recoder.myRecode(inputFileName, outputFileName);
             System.out.println("Total of " + result + " symbols recoded");
-            System.out.println("Slave said: " + myResult);
+            System.out.println("It said: " + myResult);
         } catch (IOException e) {
             System.err.println("error " + e.getMessage());
         }
