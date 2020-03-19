@@ -1,7 +1,5 @@
 package recode;
 
-import com.sun.tools.javac.util.Convert;
-
 import java.io.*;
 
 public class Recoder {

@@ -5,7 +5,7 @@ plugins {
 jar {
     manifest {
         attributes("Manifest-Version": "1.0",
-                "Main-Class": "recode.RecoderLauncher");
+                "Main-Class": "pack.PackerLauncher");
     }
 }
 
@@ -18,6 +18,7 @@ task fatJar(type: Jar) {
         exclude "META-INF/*.DSA"
         exclude "META-INF/*.RSA"
     }
+    archiveBaseName = 'packer'
     with jar
 }
 
