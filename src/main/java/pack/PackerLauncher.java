@@ -8,14 +8,21 @@ import java.io.IOException;
 
 public class PackerLauncher {
 
-    @Argument(metaVar = "TaskName", required = true, usage = "Type of task")
-    private String task;
+    @Option(name = "-z", metaVar = "-z", usage = "Type of task")
+    private boolean packTask;
+
+    @Option(name = "-u", metaVar = "-z", usage = "Type of task")
+    private boolean unpackTask;
 
     @Option(name = "-out", metaVar = "OutputName", required = true, usage = "Output file name")
     private String outputName;
 
-    @Argument(metaVar = "InputFileName", index = 1, required = true, usage = "Input file name")
+    @Argument(metaVar = "InputFileName", required = true, usage = "Input file name")
     private String inputName;
+
+    public static void main (String [] args) {
+        new PackerLauncher().launch(args);
+    }
 
 
     private void launch (String [] args) {
@@ -30,11 +37,12 @@ public class PackerLauncher {
             return;
         }
 
-        Packer packer = new Packer(task);
+        Packer packer = new Packer(packTask, unpackTask);
         try {
             packer.pack(inputName, outputName);
+            System.out.println("SUCCESS");
         } catch (IOException e) {
-            
+            System.err.println("ERROR: " + e.getMessage() + System.lineSeparator());
         }
     }
 }

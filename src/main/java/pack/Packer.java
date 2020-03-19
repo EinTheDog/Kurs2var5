@@ -3,19 +3,35 @@ package pack;
 import java.io.*;
 
 public class Packer {
-    private String task;
+    private enum Task {
+        packTask, unpackTask;
+    }
 
-    public Packer(String task) {
-        this.task = task;
+    Task task;
+
+    public Packer(boolean packTask, boolean unpackTask) {
+        if (packTask == true) task = Task.packTask;
+        else {
+            if (unpackTask == true) task = Task.packTask;
+            else System.err.println("ERROR: Can't define the task. Use -z or -u to set the task");
+        }
     }
 
     public void pack(InputStream in, OutputStream out) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(in)) {
             try (OutputStreamWriter writer = new OutputStreamWriter(out)) {
-                char sym = (char) reader.read();
-                while (sym != -1) {
-                    writer.write(sym);
-                    sym = (char) reader.read();
+                if (task == Task.packTask) {
+                    int sym = reader.read();
+                    while (sym != -1) {
+                        writer.write(sym);
+                        sym = reader.read();
+                    }
+                } else {
+                    int sym = reader.read();
+                    while (sym != -1) {
+                        writer.write(sym);
+                        sym = reader.read();
+                    }
                 }
             }
         } catch (IOException e) {
