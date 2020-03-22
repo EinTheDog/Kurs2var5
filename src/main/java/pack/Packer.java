@@ -70,14 +70,11 @@ public class Packer {
                         } else {
                             same = cur - 48;
                         }
-                        System.out.println("same = " + same + ", unique = " + unique);
                         while (48 <= next && next <= 57) {
-                            System.out.println("next = " + next);
                             if (same > 0) same = same * 10 + next - 48;
                             else  unique = unique * 10 + next - 48;
                             next = reader.read();
                         }
-                        System.out.println("same = " + same + ", unique = " + unique);
                         for (int i = 0; i < same; i++) writer.write(next);
                         for (int i = 0; i < unique; i++) {
                             writer.write(next);
@@ -88,7 +85,6 @@ public class Packer {
                         next = reader.read();
                         same = 0;
                         unique = 0;
-                        System.out.println("while");
                     }
                 }
             }
@@ -99,7 +95,7 @@ public class Packer {
 
     public void pack(String in, String out) throws IOException {
         try (FileInputStream inputStream = new FileInputStream(in)) {
-            try (FileOutputStream outputStream = new FileOutputStream(out)) {
+            try (FileOutputStream outputStream = new FileOutputStream("../../output/"+ out)) {
                 pack(inputStream, outputStream);
             }
         }
