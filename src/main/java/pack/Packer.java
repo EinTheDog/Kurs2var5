@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Packer {
     private enum Task {
-        packTask, unpackTask;
+        packTask, unpackTask
     }
 
     Task task;
@@ -56,32 +56,39 @@ public class Packer {
                         writer.write(String.valueOf(same));
                         writer.write(cur);
                     }
-
                 } else {
                     int same = 0;
                     int unique = 0;
                     int cur = reader.read();
                     int next = reader.read();
-                    if (cur == '-') {
-                        cur = next;
-                        next = reader.read();
-                        unique = cur;
-                    } else {
-                        same = cur;
-                    }
                     while (cur != -1) {
-                        while (Character.isDigit(next)) {
-                            if (same > 0) same = same * 10 + next;
-                            else  unique = unique * 10 + next;
+                        if (cur == '-') {
+                            if (next == -1) break;
                             cur = next;
                             next = reader.read();
+                            unique = cur - 48;
+                        } else {
+                            same = cur - 48;
                         }
+                        System.out.println("same = " + same + ", unique = " + unique);
+                        while (48 <= next && next <= 57) {
+                            System.out.println("next = " + next);
+                            if (same > 0) same = same * 10 + next - 48;
+                            else  unique = unique * 10 + next - 48;
+                            next = reader.read();
+                        }
+                        System.out.println("same = " + same + ", unique = " + unique);
                         for (int i = 0; i < same; i++) writer.write(next);
                         for (int i = 0; i < unique; i++) {
                             writer.write(next);
-                            cur = next;
                             next = reader.read();
                         }
+                        if (same > 0) next = reader.read();
+                        cur = next;
+                        next = reader.read();
+                        same = 0;
+                        unique = 0;
+                        System.out.println("while");
                     }
                 }
             }
