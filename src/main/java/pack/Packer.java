@@ -93,11 +93,23 @@ public class Packer {
         }
     }
 
+    private String findName (String path) {
+        char [] pathArr = path.toCharArray();
+        int l = path.length();
+        int i = l - 1;
+        while (pathArr[i] != '\\' && pathArr[i] != '/') {
+            i--;
+        }
+        return path.substring(i, l);
+    }
+
     public void pack(String in, String out) throws IOException {
+        if (out == null) out = findName(in) + "-rle.txt";
         try (FileInputStream inputStream = new FileInputStream(in)) {
             try (FileOutputStream outputStream = new FileOutputStream("../../output/"+ out)) {
                 pack(inputStream, outputStream);
             }
         }
     }
+
 }
