@@ -100,13 +100,13 @@ public class Packer {
         while (pathArr[i] != '\\' && pathArr[i] != '/') {
             i--;
         }
-        return path.substring(i, l);
+        return path.substring(i, l - 4);
     }
 
     public void pack(String in, String out) throws IOException {
         if (out == null) out = findName(in) + "-rle.txt";
         try (FileInputStream inputStream = new FileInputStream(in)) {
-            try (FileOutputStream outputStream = new FileOutputStream("../../output/"+ out)) {
+            try (FileOutputStream outputStream = new FileOutputStream("./output/"+ out)) {
                 pack(inputStream, outputStream);
             }
         }
