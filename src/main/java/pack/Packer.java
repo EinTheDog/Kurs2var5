@@ -1,115 +1,119 @@
 package pack;
 
 import java.io.*;
+import java.nio.file.Path;
 
 public class Packer {
-    private enum Task {
-        packTask, unpackTask
-    }
+    private int unique, same, cur, next;
+    private StringBuilder sbUnique;
 
-    Task task;
-
-    public Packer(boolean packTask, boolean unpackTask) {
-        if (packTask) task = Task.packTask;
-        else {
-            if (unpackTask) task = Task.unpackTask;
-            else System.err.println("ERROR: Can't define the task. Use -z or -u to set the task");
-        }
-    }
-
-    public void pack(InputStream in, OutputStream out) {
-        try (InputStreamReader reader = new InputStreamReader(in)) {
-            try (OutputStreamWriter writer = new OutputStreamWriter(out)) {
-                if (task == Task.packTask) {
-                    int unique = 0;
-                    StringBuilder sbUnique = new StringBuilder();
-                    int same = 1;
-                    int cur = reader.read();
-                    int next = reader.read();
-                    while (cur != -1) {
-                        if (cur != next) {
-                            if (same > 1) {
-                                writer.write(String.valueOf(same));
-                                writer.write(cur);
-                                same = 1;
-                            } else {
-                                unique++;
-                                sbUnique.append((char) cur);
-                            }
-                        } else {
-                            if (unique > 0) {
-                                writer.write('-' + String.valueOf(unique));
-                                writer.write(sbUnique.toString());
-                                unique = 0;
-                                sbUnique = new StringBuilder();
-                            }
-                            same++;
-                        }
-                        cur = next;
-                        next = reader.read();
-                    }
-                    if (unique > 0) {
-                        writer.write('-' + String.valueOf(unique));
-                        writer.write(sbUnique.toString());
-                    }
-                    if (same > 1) {
-                        writer.write(String.valueOf(same));
-                        writer.write(cur);
-                    }
-                } else {
-                    int same = 0;
-                    int unique = 0;
-                    int cur = reader.read();
-                    int next = reader.read();
-                    while (cur != -1) {
-                        if (cur == '-') {
-                            if (next == -1) break;
-                            cur = next;
-                            next = reader.read();
-                            unique = cur - 48;
-                        } else {
-                            same = cur - 48;
-                        }
-                        while (48 <= next && next <= 57) {
-                            if (same > 0) same = same * 10 + next - 48;
-                            else  unique = unique * 10 + next - 48;
-                            next = reader.read();
-                        }
-                        for (int i = 0; i < same; i++) writer.write(next);
-                        for (int i = 0; i < unique; i++) {
-                            writer.write(next);
-                            next = reader.read();
-                        }
-                        if (same > 0) next = reader.read();
-                        cur = next;
-                        next = reader.read();
-                        same = 0;
-                        unique = 0;
-                    }
-                }
-            }
+    private void writeUniq (FileOutputStream writer) throws IOException {
+        try {
+            writer.write(-unique);
+            for (char symb: sbUnique.toString().toCharArray()) writer.write(symb);
+            unique = 0;
+            sbUnique = new StringBuilder();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private String findName (String path) {
-        char [] pathArr = path.toCharArray();
-        int l = path.length();
-        int i = l - 1;
-        while (pathArr[i] != '\\' && pathArr[i] != '/') {
-            i--;
+    private void writeSame (FileOutputStream writer) throws IOException {
+        System.out.println("same = " + same + ", cur = " + cur);
+        try {
+            writer.write(same);
+            writer.write(cur);
+            same = 1;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return path.substring(i, l - 4);
     }
 
-    public void pack(String in, String out) throws IOException {
-        if (out == null) out = findName(in) + "-rle.txt";
-        try (FileInputStream inputStream = new FileInputStream(in)) {
-            try (FileOutputStream outputStream = new FileOutputStream("./output/"+ out)) {
-                pack(inputStream, outputStream);
+    //метод для запаковки файла
+
+    public void pack(Path in, Path out) throws IOException {
+        //если имя выходного файла не введено - генерируем его самостоятельно
+        if (out == null) out = in.getFileName();
+        try (FileInputStream reader = new FileInputStream(in.toFile())) {
+            try (FileOutputStream writer = new FileOutputStream("./output/" + out.toString())) {
+                unique = 0; // кол-во уникальных символов, идущих подряд
+                sbUnique = new StringBuilder();
+                same = 1; // кол-во одинаковых символов, идущих подряд
+                //считываем 2 байта
+                cur = reader.read();
+                next = reader.read();
+                //продолжаем считывать байты, пока не в читаемом файле не кончатся символы
+                while (next != -1) {
+                    // не даем занять числу больше 1 байта при записи
+                    if (unique == -128) writeUniq(writer);
+                    if (same == 127) writeSame(writer);
+                    // если два символа не совпадают, то выписываем сколько одинаковых символов мы насчитали и сбрасываем счетчик
+                    // если счетчик и так равен 1, то у нас подряд идут 2 неодинаковых символа, а значит пора считать
+                    // кол-во уникальных символов, идущих подряд
+                    if (cur != next) {
+                        if (same > 1) writeSame(writer);
+                        else {
+                            unique--;
+                            sbUnique.append((char) cur);
+                        }
+                    } else {
+                        //если подряд идут 2 одинаковых символа, то выписывем кол-во уникальных символов, идущих подряд
+                        // и сбрасывем их счетчик
+                        // начинаем считать кол-во одинаковых символов подряд
+                        if (unique > 0) writeUniq(writer);
+                        same++;
+                    }
+                    cur = next;
+                    next = reader.read();
+                }
+                // выписываем кол-во уникальных или повторяющихся символов, которые мы успели начсчиать, пока у нас
+                // не кончились символы в файле
+                if (unique > 0) writeUniq();
+                if (same > 1) writeSame();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
+
+    //метод для распаковки файла
+    public void unpack(Path in, Path out) throws IOException {
+        //если имя выходного файла не введено - генерируем его самостоятельно
+        if (out == null) out = in.getFileName();
+        try (FileInputStream reader = new FileInputStream(in.toFile())) {
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("./output/" + out.toString()))) {
+                int same = 0;
+                int unique = 0;
+                //читаем 2 байта, 1-ый - кол-во символов (если <0 - уникальных, если >0 - повторяющихся), 2-ой - символ
+                int num = reader.read();
+                int sym = reader.read();
+                while (num != -1) {
+                    //проаверяем: кол-во каких символов мы узнали
+                    if (num < 0) {
+                        unique = -num;
+                    } else {
+                        same = num;
+                    }
+                    //печатаем символы
+                    for (int i = 0; i < same; i++) writer.write(sym);
+                    for (int i = 0; i < unique; i++) {
+                        writer.write((char) sym);
+                        sym = reader.read();
+                    }
+                    //повторяем пока не дочитаем файл до конца
+                    num = reader.read();
+                    sym = reader.read();
+                    same = 0;
+                    unique = 0;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
 
 }
