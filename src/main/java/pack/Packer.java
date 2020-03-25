@@ -12,22 +12,22 @@ public class Packer {
         try {
             writer.write(unique);
             for (char symb: sbUnique.toString().toCharArray()) writer.write(symb);
-            System.out.println("unique = " + unique + ", sbUbique = " + sbUnique.toString());
             unique = 0;
             sbUnique = new StringBuilder();
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
     private void writeSame (OutputStream writer) throws IOException {
-        System.out.println("same = " + same + ", cur = " + cur);
         try {
             writer.write(same);
             writer.write(cur);
             same = 1;
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
@@ -45,7 +45,7 @@ public class Packer {
                 cur = (byte) input.read();
                 next = (byte) input.read();
                 //продолжаем считывать байты, пока не в читаемом файле не кончатся символы
-                while (next != -1) {
+                while (cur != -1) {
                     // не даем занять числу больше 1 байта при записи
                     if (unique == -128) writeUniq(output);
                     if (same == 127) writeSame(output);
@@ -70,7 +70,7 @@ public class Packer {
                 }
                 // выписываем кол-во уникальных или повторяющихся символов, которые мы успели начсчиать, пока у нас
                 // не кончились символы в файле
-                if (unique > 0) writeUniq(output);
+                if (unique < 0) writeUniq(output);
                 if (same > 1) writeSame(output);
             }
         } catch (IOException e) {
@@ -81,10 +81,9 @@ public class Packer {
 
     //метод для распаковки файла
     public void unpack(Path in, Path out) throws IOException {
+        //если имя выходного файла не введено - генерируем его самостоятельно
         String name = in.getFileName().toString();
         if (out == null) out = Paths.get(name.substring(0, name.length() - 3));
-        //если имя выходного файла не введено - генерируем его самостоятельно
-        if (out == null) out = in.getFileName();
         try (InputStream input = new FileInputStream(in.toFile())) {
             try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("./output/" + out.toString()))) {
                 int same = 0;

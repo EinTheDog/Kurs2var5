@@ -34,5 +34,29 @@ class PackerLauncherTest {
         equality = Files.equal(file, new File("./src/test/resources/input/file2"));
         assertTrue(equality);
 
+        args = new String[]{"-z", "./src/test/resources/input/file3"};
+        PackerLauncher.main(args);
+        args = new String[]{"-u", "./output/file3.rle"};
+        PackerLauncher.main(args);
+        file = new File("./output/file3");
+        equality = Files.equal(file, new File("./src/test/resources/input/file3"));
+        assertTrue(equality);
+
+        args = new String[]{"-z", "./src/test/resources/input/file4.txt"};
+        PackerLauncher.main(args);
+        args = new String[]{"-u", "./output/file4.txt.rle"};
+        PackerLauncher.main(args);
+        file = new File("./output/file4.txt");
+        equality = Files.equal(file, new File("./src/test/resources/input/file4.txt"));
+        assertTrue(equality);
+
+        args = new String[]{"-z", "./src/test/resources/input/file5.txt"};
+        PackerLauncher.main(args);
+        args = new String[]{"-u", "./output/file5.txt.rle"};
+        PackerLauncher.main(args);
+        file = new File("./output/file5.txt");
+        equality = Files.equal(file, new File("./src/test/resources/input/file5.txt"));
+        assertTrue(equality);
+
     }
 }
