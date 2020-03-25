@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import com.google.common.io.*;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PackerLauncherTest {
 
     @Test
-    void main() throws IOException {
+    void standardTests() throws IOException {
         String [] args = {"-z","-out", "newFile1.txt", "./src/test/resources/input/file1.txt"};
         PackerLauncher.main(args);
         args = new String[]{"-u","-out", "newFile1.txt", "./output/newFile1.txt.rle"};
@@ -57,6 +59,22 @@ class PackerLauncherTest {
         file = new File("./output/file5.txt");
         equality = Files.equal(file, new File("./src/test/resources/input/file5.txt"));
         assertTrue(equality);
+    }
+
+    @Test
+    void exceptionTests() {
+        String [] args = {"-out", "newFile1.txt", "./src/test/resources/input/file1.txt"};
+        String[] finalArgs = args;
+        assertThrows(IllegalArgumentException.class, () -> PackerLauncher.main(finalArgs));
+
+        args = new String[]{"-z", "-out", "newFile1.txt"};
+        String[] finalArgs1 = args;
+        assertThrows(IllegalArgumentException.class, () -> PackerLauncher.main(finalArgs1));
+
+        args = new String[]{"-u", "./file0.txt.rle"};
+        String[] finalArgs2 = args;
+        assertThrows(IOException.class, () -> PackerLauncher.main(finalArgs2));
 
     }
+
 }

@@ -21,12 +21,12 @@ public class PackerLauncher {
     @Argument(metaVar = "InputFileName", required = true, usage = "Input file name")
     private Path inputName;
 
-    public static void main (String [] args) {
+    public static void main (String [] args) throws IOException {
         new PackerLauncher().launch(args);
     }
 
 
-    private void launch (String [] args) {
+    private void launch (String [] args) throws IOException {
         CmdLineParser parser = new CmdLineParser(this);
 
         try {
@@ -35,7 +35,7 @@ public class PackerLauncher {
             System.err.println(e.getMessage());
             System.err.println("java -jar packer-1.0.jar -z|-u -out OutputName InputName");
             parser.printUsage(System.err);
-            return;
+            throw new IllegalArgumentException();
         }
         Packer packer = new Packer();
         try {
@@ -50,6 +50,7 @@ public class PackerLauncher {
             System.out.println("SUCCESS");
         } catch (IOException e) {
             System.err.println("ERROR: " + e.getMessage() + System.lineSeparator());
+            throw e;
         }
     }
 }
