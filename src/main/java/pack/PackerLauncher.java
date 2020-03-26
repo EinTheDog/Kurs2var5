@@ -5,6 +5,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 public class PackerLauncher {
@@ -16,10 +18,10 @@ public class PackerLauncher {
     private boolean unpackTask;
 
     @Option(name = "-out", metaVar = "OutputName", required = false, usage = "Output file name")
-    private Path outputName;
+    private String outputName;
 
     @Argument(metaVar = "InputFileName", required = true, usage = "Input file name")
-    private Path inputName;
+    private String inputName;
 
     public static void main (String [] args) throws IOException {
         new PackerLauncher().launch(args);
@@ -28,7 +30,6 @@ public class PackerLauncher {
 
     private void launch (String [] args) throws IOException {
         CmdLineParser parser = new CmdLineParser(this);
-
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
@@ -38,10 +39,12 @@ public class PackerLauncher {
             throw new IllegalArgumentException();
         }
         Packer packer = new Packer();
+        Path pathIn = FileSystems.getDefault().getPath(inputName);
+        Path pathOut =  outputName != null? FileSystems.getDefault().getPath(outputName): null;
         try {
-            if (packTask) packer.pack(inputName, outputName);
+            if (packTask) packer.pack(pathIn, pathOut);
             else {
-                if (unpackTask) packer.unpack(inputName, outputName);
+                if (unpackTask) packer.unpack(pathIn, pathOut);
                 else {
                     System.err.println("ERROR: Can't define the task. Use -z or -u to set the task");
                     throw new IllegalArgumentException();

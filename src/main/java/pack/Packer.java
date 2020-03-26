@@ -8,6 +8,11 @@ public class Packer {
     private byte unique, same, cur, next;
     private StringBuilder sbUnique;
 
+    /**
+     * метод для закодированной записи непрерывной последовательности уникальных символов
+     * @param writer
+     * @throws IOException
+     */
     private void writeUniq (OutputStream writer) throws IOException {
         try {
             writer.write(unique);
@@ -20,6 +25,11 @@ public class Packer {
         }
     }
 
+    /**
+     * метод для закодированной записи непрерывной последовательности повторяющихся символов
+     * @param writer
+     * @throws IOException
+     */
     private void writeSame (OutputStream writer) throws IOException {
         try {
             writer.write(same);
@@ -31,8 +41,12 @@ public class Packer {
         }
     }
 
-    //метод для запаковки файла
-
+    /**
+     * метод для запаковки файла
+     * @param in путь для файла, из которго мы читаем данные
+     * @param out путь для файла, в который мы записываем данные
+     * @throws IOException
+     */
     public void pack(Path in, Path out) throws IOException {
         //если имя выходного файла не введено - генерируем его самостоятельно
         if (out == null) out = in.getFileName();
@@ -79,7 +93,12 @@ public class Packer {
         }
     }
 
-    //метод для распаковки файла
+    /**
+     * метод для распаковки файла
+     * @param in путь для файла, из которго мы читаем данные
+     * @param out путь для файла, в который мы записываем данные
+     * @throws IOException
+     */
     public void unpack(Path in, Path out) throws IOException {
         //если имя выходного файла не введено - генерируем его самостоятельно
         String name = in.getFileName().toString();
