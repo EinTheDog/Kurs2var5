@@ -51,7 +51,9 @@ public class Packer {
         //если имя выходного файла не введено - генерируем его самостоятельно
         if (out == null) out = in.getFileName();
         try (InputStream input = new FileInputStream(in.toFile())) {
-            try (OutputStream output = new FileOutputStream("./output/" + out.toString() + ".rle")) {
+            File directory = new File("./output");
+            if (!directory.exists()) directory.mkdir();
+            try (OutputStream output = new FileOutputStream("./output/" + out + ".rle")) {
                 unique = 0; // кол-во уникальных символов, идущих подряд
                 sbUnique = new StringBuilder();
                 same = 1; // кол-во одинаковых символов, идущих подряд
@@ -103,7 +105,9 @@ public class Packer {
         String name = in.getFileName().toString();
         if (out == null) out = Paths.get(name.substring(0, name.length() - 3));
         try (InputStream input = new FileInputStream(in.toFile())) {
-            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("./output/" + out.toString()))) {
+            File directory = new File("./output");
+            if (!directory.exists()) directory.mkdir();
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("./output/" + out))) {
                 int same = 0;
                 int unique = 0;
                 //читаем 2 байта, 1-ый - кол-во символов (если <0 - уникальных, если >0 - повторяющихся), 2-ой - символ
