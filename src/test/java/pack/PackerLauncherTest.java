@@ -63,7 +63,12 @@ class PackerLauncherTest {
 
     @Test
     void exceptionTests() {
-        String [] args = {"-out", "newFile1.txt", "./src/test/resources/input/file1.txt"};
+
+        String [] args = new String[]{"-u", "./file0.txt.rle"};
+        String[] finalArgs2 = args;
+        assertThrows(IOException.class, () -> PackerLauncher.main(finalArgs2));
+
+        args =new  String[]{"-out", "newFile1.txt", "./src/test/resources/input/file1.txt"};
         String[] finalArgs = args;
         assertThrows(IllegalArgumentException.class, () -> PackerLauncher.main(finalArgs));
 
@@ -71,9 +76,6 @@ class PackerLauncherTest {
         String[] finalArgs1 = args;
         assertThrows(IllegalArgumentException.class, () -> PackerLauncher.main(finalArgs1));
 
-        args = new String[]{"-u", "./file0.txt.rle"};
-        String[] finalArgs2 = args;
-        assertThrows(IOException.class, () -> PackerLauncher.main(finalArgs2));
 
     }
 

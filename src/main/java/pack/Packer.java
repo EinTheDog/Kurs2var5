@@ -88,7 +88,6 @@ public class Packer {
                 if (same > 1) writeSame(output);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw e;
         }
     }
@@ -132,7 +131,6 @@ public class Packer {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw e;
         }
     }

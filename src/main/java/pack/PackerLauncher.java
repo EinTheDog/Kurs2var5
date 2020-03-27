@@ -24,6 +24,7 @@ public class PackerLauncher {
     private String inputName;
 
     public static void main (String [] args) throws IOException {
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         new PackerLauncher().launch(args);
     }
 
