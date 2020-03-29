@@ -29,6 +29,11 @@ public class PackerLauncher {
     }
 
 
+    /**
+     * Метод вызывает на исполнение методы класса packer, а также бросает ошибки в случае некорректного ввода команд
+     * @param args
+     * @throws IOException
+     */
     private void launch (String [] args) throws IOException {
         CmdLineParser parser = new CmdLineParser(this);
         try {

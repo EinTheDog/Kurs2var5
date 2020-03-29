@@ -103,7 +103,8 @@ public class Packer {
         String name = in.getFileName().toString();
         if (out == null) out = Paths.get(name.substring(0, name.length() - 3));
         try (InputStream input = new FileInputStream(in.toFile())) {
-            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("./output/" + out.toString()))) {
+            
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("../output/" + out.toString()))) {
                 int same = 0;
                 int unique = 0;
                 //читаем 2 байта, 1-ый - кол-во символов (если <0 - уникальных, если >0 - повторяющихся), 2-ой - символ
