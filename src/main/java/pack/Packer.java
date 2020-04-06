@@ -51,7 +51,7 @@ public class Packer {
         //если имя выходного файла не введено - генерируем его самостоятельно
         if (out == null) out = in.getFileName();
         try (InputStream input = new FileInputStream(in.toFile())) {
-            String directoryName = "."+ File.separatorChar + "output";
+            String directoryName = "output";
             File directory = new File(directoryName);
             if (! directory.exists()) directory.mkdir();
             try (OutputStream output = new FileOutputStream(directoryName + File.separatorChar + out.toString() + ".rle")) {
