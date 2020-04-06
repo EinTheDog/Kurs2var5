@@ -54,7 +54,7 @@ public class Packer {
             String directoryName = "."+ File.separatorChar + "output";
             File directory = new File(directoryName);
             if (! directory.exists()) directory.mkdir();
-            try (OutputStream output = new FileOutputStream(directoryName+ File.separatorChar + out.toString() + ".rle")) {
+            try (OutputStream output = new FileOutputStream(directoryName + File.separatorChar + out.toString() + ".rle")) {
                 unique = 0; // кол-во уникальных символов, идущих подряд
                 sbUnique = new StringBuilder();
                 same = 1; // кол-во одинаковых символов, идущих подряд
