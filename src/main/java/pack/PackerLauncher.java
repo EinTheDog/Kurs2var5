@@ -5,19 +5,17 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 public class PackerLauncher {
-
-    @Option(name = "-z", metaVar = "zip", required = false,  usage = "Type of task", forbids = {"-u"})
+    @Option(name = "-z", metaVar = "zip",  usage = "Type of task", forbids = {"-u"})
     private boolean packTask;
 
-    @Option(name = "-u", metaVar = "unzip", required = false,  usage = "Type of task", forbids = {"-z"})
+    @Option(name = "-u", metaVar = "unzip",  usage = "Type of task", forbids = {"-z"})
     private boolean unpackTask;
 
-    @Option(name = "-out", metaVar = "OutputName", required = false, usage = "Output file name")
+    @Option(name = "-out", metaVar = "OutputName", usage = "Output file name")
     private String outputName;
 
     @Argument(metaVar = "InputFileName", required = true, usage = "Input file name")

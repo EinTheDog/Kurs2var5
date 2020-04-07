@@ -31,14 +31,9 @@ public class Packer {
      * @throws IOException
      */
     private void writeSame (OutputStream writer) throws IOException {
-        try {
             writer.write(same);
             writer.write(cur);
             same = 1;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
     }
 
     /**
@@ -90,8 +85,6 @@ public class Packer {
                 if (unique < 0) writeUniq(output);
                 if (same > 1) writeSame(output);
             }
-        } catch (IOException e) {
-            throw e;
         }
     }
 
@@ -134,8 +127,6 @@ public class Packer {
                     unique = 0;
                 }
             }
-        } catch (IOException e) {
-            throw e;
         }
     }
 
