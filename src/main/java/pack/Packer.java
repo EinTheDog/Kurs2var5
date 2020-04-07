@@ -3,10 +3,12 @@ package pack;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Packer {
     private byte unique, same, cur, next;
-    private StringBuilder sbUnique;
+    private List <Integer> symbolAdder;
 
     /**
      * метод для закодированной записи непрерывной последовательности уникальных символов
@@ -16,9 +18,9 @@ public class Packer {
     private void writeUniq (OutputStream writer) throws IOException {
         try {
             writer.write(unique);
-            for (char symb: sbUnique.toString().toCharArray()) writer.write(symb);
+            for (int symb: symbolAdder) writer.write(symb);
             unique = 0;
-            sbUnique = new StringBuilder();
+            symbolAdder = new ArrayList<>();
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -51,7 +53,7 @@ public class Packer {
             if (! directory.exists()) directory.mkdir();
             try (OutputStream output = new FileOutputStream(directoryName + File.separatorChar + out.toString() + ".rle")) {
                 unique = 0; // кол-во уникальных символов, идущих подряд
-                sbUnique = new StringBuilder();
+                symbolAdder = new ArrayList<>();
                 same = 1; // кол-во одинаковых символов, идущих подряд
                 //считываем 2 байта
                 cur = (byte) input.read();
@@ -68,7 +70,7 @@ public class Packer {
                         if (same > 1) writeSame(output);
                         else {
                             unique--;
-                            sbUnique.append((char) cur);
+                            symbolAdder.add((int) cur);
                         }
                     } else {
                         //если подряд идут 2 одинаковых символа, то выписывем кол-во уникальных символов, идущих подряд
