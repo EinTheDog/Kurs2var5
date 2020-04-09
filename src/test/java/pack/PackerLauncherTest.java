@@ -11,7 +11,7 @@ class PackerLauncherTest {
 
     @Test
     void standardTests() throws IOException {
-        char sep = File.separatorChar;
+        String sep = System.getProperty( "file.separator" );
         String [] args = {"-z","-out", "newFile1.txt",
                 "." + sep + "src" + sep + "test" + sep + "resources" + sep + "input" + sep + "file1.txt"};
         PackerLauncher.main(args);
