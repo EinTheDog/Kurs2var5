@@ -16,15 +16,10 @@ public class Packer {
      * @throws IOException
      */
     private void writeUniq (OutputStream writer) throws IOException {
-        try {
-            writer.write(unique);
-            for (int symb: symbolAdder) writer.write(symb);
-            unique = 0;
-            symbolAdder = new ArrayList<>();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
+        writer.write(unique);
+        for (int symb : symbolAdder) writer.write(symb);
+        unique = 0;
+        symbolAdder = new ArrayList<>();
     }
 
     /**
@@ -33,9 +28,9 @@ public class Packer {
      * @throws IOException
      */
     private void writeSame (OutputStream writer) throws IOException {
-            writer.write(same);
-            writer.write(cur);
-            same = 1;
+        writer.write(same);
+        writer.write(cur);
+        same = 1;
     }
 
     /**
