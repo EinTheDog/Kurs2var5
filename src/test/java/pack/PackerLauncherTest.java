@@ -12,6 +12,7 @@ class PackerLauncherTest {
     @Test
     void standardTests() throws IOException {
         String sep = System.getProperty( "file.separator" );
+        String root = System.getProperty("project.dir");
         String [] args = {"-z","-out", "newFile1.txt",
                 "." + sep + "src" + sep + "test" + sep + "resources" + sep + "input" + sep + "file1.txt"};
         PackerLauncher.main(args);

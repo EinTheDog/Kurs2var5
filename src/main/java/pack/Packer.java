@@ -94,7 +94,7 @@ public class Packer {
     public void unpack(Path in, Path out) throws IOException {
         //если имя выходного файла не введено - генерируем его самостоятельно
         String name = in.getFileName().toString();
-        if (out == null) out = Paths.get(name.substring(0, name.length() - 3));
+        if (out == null) out = Paths.get(name.substring(0, name.length() - 4));
         try (InputStream input = new FileInputStream(in.toFile())) {
             try (OutputStreamWriter writer = new OutputStreamWriter(
                     new FileOutputStream("."+ File.separatorChar + "output" + File.separatorChar + out.toString()))) {
